@@ -48,41 +48,6 @@ The project combines macroeconomic data engineering, econometric benchmarking, r
 - Live deployment infrastructure
 - Transaction-cost modeling
 
----
-
-## Roles and Responsibilities
-
-### Arushi Sareen — Data Engineering and Exploration
-
-Responsible for:
-
-- Data ingestion pipelines
-- Macroeconomic data integration
-- Exploratory data analysis
-- Feature engineering
-- Dataset validation and preprocessing
-
-### Piyush Rustagi — Modelling and Forecasting
-
-Responsible for:
-
-- Regression baseline pipeline
-- GARCH implementation
-- BiLSTM development
-- Forecast evaluation metrics
-- Model comparison framework
-
-### Saburi Kapoor — Documentation and Analysis
-
-Responsible for:
-
-- README and documentation
-- Result interpretation
-- Visualization support
-- Dashboard development
-- Presentation preparation
-
----
 
 ## Workflow Architecture
 
