@@ -1,0 +1,6 @@
+{
+    "repo_runnable": true,
+    "data_pipeline_complete": true,
+    "regression_baseline_complete": true,
+    "primary_model_complete": false
+}
