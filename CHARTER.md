@@ -100,14 +100,6 @@ The project will be considered successful if it achieves:
 
 ---
 
-## Team Workflow
-
-### Communication
-
-- Primary coordination through WhatsApp
-- Weekly progress reviews
-- Shared GitHub workflow
-
 ### Git Workflow
 
 - Use feature branches for development
