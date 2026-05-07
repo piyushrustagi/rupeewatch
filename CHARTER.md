@@ -14,9 +14,40 @@ The project combines macroeconomic data engineering, econometric benchmarking, r
 
 ---
 
+## Core Evaluation Framework
+
+### Outcome Variable
+1-day-ahead INR/USD realized volatility measured using daily percentage returns.
+
+### Forecast Horizon
+1 trading day ahead.
+
+### Baseline Model
+Linear regression using:
+- lagged returns
+- rolling 5-day volatility
+
+### Primary Evaluation Metric
+Held-out RMSE on the test dataset.
+
+### Success Threshold
+The project target is to achieve at least 5% lower RMSE than the regression baseline using an extended forecasting model.
+
+---
+
 ## Core Research Question
 
 > Can macroeconomic indicators and machine learning methods improve INR/USD volatility forecasting relative to traditional benchmark models?
+
+## Core Deliverable
+
+The core deliverable is a reproducible forecasting pipeline for 1-day-ahead INR/USD realized volatility prediction.
+
+The pipeline must:
+- execute successfully using `uv run main.py`
+- generate automated JSON metric outputs
+- compute held-out RMSE reproducibly
+- support baseline forecasting evaluation
 
 ---
 
@@ -24,18 +55,19 @@ The project combines macroeconomic data engineering, econometric benchmarking, r
 
 ### In Scope
 
-- INR/USD exchange-rate data
-- Macroeconomic data ingestion using FRED
-- Feature engineering and volatility construction
+- INR/USD exchange-rate data pipeline
+- Data preprocessing and feature engineering
+- Lagged-return and rolling-volatility construction
 - Regression forecasting baseline
-- GARCH benchmark model
-- Bidirectional LSTM forecasting model
-- Forecast evaluation using RMSE and MAE
-- Reproducible repository and workflow pipeline
-- Documentation and automated outputs
+- RMSE evaluation pipeline
+- Reproducible repository workflow
+- Automated metric export
+- Documentation and reproducibility support
 
 ### Planned Extensions
 
+- GARCH volatility benchmark
+- Bidirectional LSTM forecasting model
 - Hidden Markov Model regime detection
 - Policy-event analysis
 - Dashboard and visualization layer
@@ -48,6 +80,19 @@ The project combines macroeconomic data engineering, econometric benchmarking, r
 - Live deployment infrastructure
 - Transaction-cost modeling
 
+## Data Source Probes
+
+### Successfully Tested
+- INR/USD exchange-rate pipeline using Yahoo Finance (`USDINR=X`)
+- Local cached dataset stored at `data/raw/usdinr.csv`
+
+### Planned Integrations
+- VIX (FRED)
+- DXY (FRED)
+- WTI Crude Oil (FRED)
+- Federal Funds Rate (FRED)
+
+---
 
 ## Workflow Architecture
 
@@ -60,43 +105,38 @@ Feature Engineering
       |
 Regression Baseline
       |
-GARCH Benchmark
+RMSE Evaluation
       |
-BiLSTM Forecasting
+Automated Metric Export
       |
-Evaluation & Comparison
-      |
-Visualization & Interpretation
+Optional Model Extensions
 ```
 
 ---
 
 ## Milestone Plan
 
-| Stage                | Deliverable                          | Status      |
-| -------------------- | ------------------------------------ | ----------- |
-| Repository setup     | GitHub repo + reproducible structure | Completed   |
-| Data pipeline        | INR/USD + macro data ingestion       | Completed   |
-| Feature engineering  | Returns + rolling volatility         | Completed   |
-| Regression baseline  | Linear regression forecasting        | In Progress |
-| GARCH benchmark      | Volatility benchmark model           | Planned     |
-| BiLSTM model         | AI forecasting model                 | Planned     |
-| Evaluation framework | RMSE / MAE comparison                | Planned     |
-| Dashboard layer      | Visualization and presentation       | Planned     |
+| Stage | Deliverable | Status |
+|---|---|---|
+| Repository setup | GitHub repo + reproducible structure | Completed |
+| Data pipeline | INR/USD data ingestion | Completed |
+| Feature engineering | Returns + rolling volatility | Completed |
+| Regression baseline | Linear regression forecasting | Completed |
+| Evaluation contract | RMSE baseline + threshold definition | Completed |
+| Macroeconomic integration | Additional feature ingestion | In Progress |
+| Optional extensions | GARCH / BiLSTM / dashboard | Planned |
 
 ---
 
 ## Success Criteria
 
-The project will be considered successful if it achieves:
+The project will aim that:
 
-1. A fully runnable and reproducible repository
-2. Automated data ingestion and preprocessing
-3. Successful baseline forecasting pipeline
-4. Econometric benchmark implementation
-5. Comparative evaluation between benchmark and ML models
-6. Clear economic interpretation of results
-7. Proper documentation and workflow transparency
+1. The repository is fully reproducible and executable.
+2. The regression baseline pipeline runs successfully.
+3. Automated metric outputs are generated reproducibly.
+4. Held-out RMSE is computed on the test dataset.
+5. An extended forecasting model achieves the predefined RMSE improvement target relative to the regression baseline.
 
 ---
 

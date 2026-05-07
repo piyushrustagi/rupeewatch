@@ -1,4 +1,13 @@
 {
-    "model": "BiLSTM (planned)",
-    "status": "in_progress"
+    "target_variable": "1-day-ahead INR/USD realized volatility",
+    "unit": "daily percentage return volatility",
+    "forecast_horizon": "1 trading day",
+    "primary_metric": "RMSE",
+    "baseline_model": "Linear Regression",
+    "baseline_value": 0.003069,
+    "success_threshold": "5% lower RMSE than baseline",
+    "target_value": 0.002915,
+    "current_value": null,
+    "passed": false,
+    "status": "planned"
 }

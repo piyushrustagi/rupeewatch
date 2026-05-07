@@ -34,36 +34,45 @@ Secondary questions include:
 
 ---
 
-## Methodology
+## Core Evaluation Framework
 
-The project follows a staged modeling pipeline.
+### Outcome Variable
+1-day-ahead INR/USD realized volatility measured using daily percentage returns.
 
-### Stage 1 — Data Engineering and Baseline Forecasting
+### Forecast Horizon
+1 trading day ahead.
 
-- INR/USD exchange-rate data collection
-- Macroeconomic feature ingestion
-- Feature engineering
-- Linear regression forecasting baseline
-- RMSE evaluation pipeline
+### Baseline Model
+Linear regression using:
+- lagged returns
+- rolling 5-day volatility
 
-### Stage 2 — Econometric Benchmark
+### Primary Metric
+Held-out RMSE on the test dataset.
 
-- GARCH(1,1)
-- EGARCH
-- Volatility forecasting
-- Econometric benchmark comparison
+### Success Threshold
+The project target is to achieve at least 5% lower RMSE than the regression baseline using an extended forecasting model.
 
-### Stage 3 — Machine Learning Forecasting
+The current project focuses on building a reproducible forecasting pipeline for 1-day-ahead INR/USD realized volatility.
 
-- Bidirectional LSTM
-- Sequence modeling using macroeconomic features
-- Non-linear volatility forecasting
+### Core Workflow
 
-### Stage 4 — Advanced Extensions
+1. INR/USD exchange-rate data ingestion
+2. Data preprocessing and feature engineering
+3. Lagged-return and rolling-volatility feature construction
+4. Linear regression forecasting baseline
+5. Held-out RMSE evaluation
+6. Automated JSON metric export
 
+### Optional Extensions
+
+The following components are planned as extensions after the core evaluation pipeline is stable:
+
+- GARCH volatility benchmarks
+- Bidirectional LSTM forecasting
 - Hidden Markov Model regime detection
-- Policy-event analysis
 - Dashboard and visualization layer
+- Policy-event analysis
 
 ---
 
@@ -79,6 +88,18 @@ The project follows a staged modeling pipeline.
 | US Federal Funds Rate | FRED                       | Daily     |
 
 All datasets are publicly available.
+
+## Data Source Probes
+
+### Successfully Tested
+- INR/USD exchange-rate pipeline using Yahoo Finance (`USDINR=X`)
+- Local cached dataset generated at `data/raw/usdinr.csv`
+
+### Planned Integrations
+- VIX (FRED)
+- DXY (FRED)
+- WTI Crude Oil (FRED)
+- Federal Funds Rate (FRED)
 
 ---
 
@@ -125,12 +146,13 @@ rupeewatch/
 
 ### In Progress
 
-- Linear regression forecasting evaluation
-- GARCH benchmark implementation
-- Macroeconomic feature integration into forecasting workflow
+- Regression baseline refinement
+- RMSE evaluation pipeline
+- Macroeconomic feature integration
 
-### Planned
+### Planned Extensions
 
+- GARCH volatility benchmark
 - Bidirectional LSTM forecasting model
 - HMM volatility regime detection
 - RBI policy-event analysis
@@ -202,11 +224,9 @@ The current baseline workflow:
 
 ## Current Limitations
 
-- Regression baseline is still under refinement
-- Macro features are not yet fully integrated into forecasting models
-- GARCH and BiLSTM implementations are still in development
-- Event-study analysis is not yet implemented
-- Dashboard layer is planned but not yet active
+- The current pipeline relies primarily on lagged-return and rolling-volatility features.
+- Macroeconomic variables are not yet fully integrated into the forecasting workflow.
+- The current implementation focuses on establishing a reproducible baseline evaluation pipeline before advanced modeling extensions.
 
 ---
 
@@ -225,15 +245,6 @@ Future project extensions may include:
 ## Academic Context
 
 This project is being developed as part of **Computational Thinking and Programming using AI (ECO-6810)**, with emphasis on computational workflows, reproducibility, economic data pipelines, econometric benchmarking, and AI-assisted forecasting systems.
-
----
-
-## Acknowledgements
-
-- Yahoo Finance (`yfinance`)
-- Federal Reserve Economic Data (FRED)
-- Open-source Python ecosystem
-- Literature on volatility forecasting and hybrid econometric–ML systems
 
 ---
 
