@@ -1,5 +1,6 @@
 {
-    "model": "Linear Regression",
-    "metric": "RMSE",
-    "value": 0.003068502580229573
+    "metric_name": "RMSE",
+    "model": "linear_regression_baseline",
+    "value": 0.003068502580229573,
+    "dataset": "usdinr_test_split"
 }

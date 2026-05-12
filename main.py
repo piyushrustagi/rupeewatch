@@ -53,23 +53,30 @@ rmse = mean_squared_error(y_test, preds) ** 0.5
 
 # Baseline metric
 baseline_metric = {
-    "model": "Linear Regression",
-    "metric": "RMSE",
-    "value": float(rmse)
+    "metric_name": "RMSE",
+    "model": "linear_regression_baseline",
+    "value": float(rmse),
+    "dataset": "usdinr_test_split"
 }
 
 # Placeholder primary model
 primary_metric = {
-    "model": "BiLSTM (planned)",
-    "status": "in_progress"
+    "metric_name": "RMSE",
+    "model": "bilstm_planned",
+    "value": float(rmse),
+    "threshold": round(float(rmse) * 0.95, 8),
+    "passed": False,
+    "note": "BiLSTM in progress; baseline RMSE reported until model is complete"
 }
 
 # Manifest
 manifest = {
     "repo_runnable": True,
+    "charter_locked": True,
     "data_pipeline_complete": True,
     "regression_baseline_complete": True,
-    "primary_model_complete": False
+    "primary_model_complete": False,
+    "sources": ["yfinance:USDINR=X", "FRED:VIXCLS", "FRED:DCOILWTICO", "FRED:FEDFUNDS"]
 }
 
 # Save outputs

@@ -1,6 +1,13 @@
 {
     "repo_runnable": true,
+    "charter_locked": true,
     "data_pipeline_complete": true,
     "regression_baseline_complete": true,
-    "primary_model_complete": false
+    "primary_model_complete": false,
+    "sources": [
+        "yfinance:USDINR=X",
+        "FRED:VIXCLS",
+        "FRED:DCOILWTICO",
+        "FRED:FEDFUNDS"
+    ]
 }
