@@ -39,9 +39,9 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── CONFIGURATION ─────────────────────────────────────────────────────────────
 TICKER     = "USDINR=X"
-START_DATE = "2010-01-01"
+START_DATE = "2013-01-01"
 END_DATE   = datetime.today().strftime("%Y-%m-%d")   # always fetch up to today
-TEST_RATIO = 0.20
+TEST_RATIO = 0.15
 
 print("=== RupeeWatch Pipeline ===\n")
 print(f"Fetching INR/USD data from Yahoo Finance...")
@@ -241,4 +241,41 @@ print(f"\nNext-day forecast ({next_date.date()}):")
 print(f"  GARCH    : {next_vol:.6f} annualised vol")
 print(f"  Regression: {reg_next_vol:.6f} annualised vol")
 print(f"\nOutputs saved to {OUTPUT_DIR}/")
+# ── Save figures ──────────────────────────────────────────────────────────────
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+# Figure 1 — GARCH forecast vs actual
+fig, ax = plt.subplots(figsize=(12, 5))
+ax.plot(test.index, test["realised_vol"]*100, color='#0a2540', lw=1.5, label='Actual')
+ax.plot(test.index, garch_series*100, color='#2c7bb6', lw=1.5, linestyle='--', label='GARCH(1,1)')
+ax.plot(test.index, reg_preds*100, color='#22c55e', lw=1, linestyle=':', label='Regression')
+ax.set_xlabel('Date'); ax.set_ylabel('Annualised Vol (%)')
+ax.set_title('GARCH(1,1) vs Regression Baseline — Forecast vs Actual')
+ax.legend(); plt.tight_layout()
+plt.savefig(OUTPUT_DIR / 'forecast_vs_actual.png', dpi=150, bbox_inches='tight')
+plt.close()
+
+# Figure 2 — Model comparison bar chart
+fig, ax = plt.subplots(figsize=(7, 4))
+models = ['Regression\nBaseline', 'GARCH(1,1)']
+rmses  = [reg_rmse, garch_rmse]
+colors = ['#22c55e', '#ef4444']
+ax.bar(models, rmses, color=colors, width=0.5)
+ax.axhline(threshold, color='orange', linestyle='--', label=f'Threshold ({threshold:.4f})')
+ax.set_ylabel('RMSE'); ax.set_title('Model Comparison — RMSE')
+ax.legend(); plt.tight_layout()
+plt.savefig(OUTPUT_DIR / 'model_comparison.png', dpi=150, bbox_inches='tight')
+plt.close()
+
+# Table — model metrics CSV
+metrics_df = pd.DataFrame({
+    'model': ['regression_baseline', 'garch_1_1'],
+    'rmse':  [round(reg_rmse, 6), round(garch_rmse, 6)],
+    'mae':   [round(reg_mae, 6), round(garch_mae, 6)],
+    'passed': [None, garch_passed]
+})
+metrics_df.to_csv(OUTPUT_DIR / 'model_metrics.csv', index=False)
+print("Figures and table saved to outputs/")
 print("Done. Run: uv run main.py")

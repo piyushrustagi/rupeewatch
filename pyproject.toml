@@ -9,4 +9,5 @@ dependencies = [
     "yfinance",
     "scikit-learn",
     "arch",
+    "matplotlib",
 ]
