@@ -157,10 +157,15 @@ h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
       <div class="forecast-note">1σ range for tomorrow</div>
     </div>
     <div class="forecast-box">
-      <div class="forecast-title">INR Move Range</div>
-      <div class="forecast-value" id="fc-paise">±56p</div>
-      <div class="forecast-note">Approx. paise vs USD (1σ)</div>
-    </div>
+  <div class="forecast-title">INR Move Range</div>
+  <div class="forecast-value" id="fc-paise">±56p</div>
+  <div class="forecast-note">Approx. paise vs USD (1σ)</div>
+</div>
+<div class="forecast-box" style="border-left-color:#756bb1;background:#f5f3ff;">
+  <div class="forecast-title">Next Day Price Forecast</div>
+  <div class="forecast-value" id="fc-price" style="color:#756bb1;">₹95.67</div>
+  <div class="forecast-note" id="fc-price-range">Range: ₹95.11 – ₹96.23</div>
+</div>
   </div>
 
   <div class="metrics-row">
@@ -176,7 +181,8 @@ h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
 
   <h3>Volatility Forecast vs Actual — Full Test Period</h3>
 <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-  <button class="range-btn active" onclick="setRange('all')">All</button>
+  <button class="range-btn active" onclick="setRange('all')">Test Period</button>
+<button class="range-btn" onclick="setRange('full')">Full (2013–)</button>
   <button class="range-btn" onclick="setRange('6m')">6M</button>
   <button class="range-btn" onclick="setRange('3m')">3M</button>
   <button class="range-btn" onclick="setRange('1m')">1M</button>
@@ -294,6 +300,14 @@ const paise      = dailyVol / 100 * 95.67 * 100;
 document.getElementById('fc-vol').textContent   = (lastBiLSTM*100).toFixed(2)+'%';
 document.getElementById('fc-daily').textContent = '±'+dailyVol.toFixed(2)+'%';
 document.getElementById('fc-paise').textContent = '±'+paise.toFixed(0)+'p';
+const currentPrice = 95.67;
+const dailyMove = currentPrice * lastBiLSTM / Math.sqrt(252);
+const nextPrice = currentPrice;
+const lo = (currentPrice - dailyMove).toFixed(2);
+const hi = (currentPrice + dailyMove).toFixed(2);
+const arrow = lastBiLSTM > 0.07 ? '↑' : '→';
+document.getElementById('fc-price').textContent = '₹' + nextPrice.toFixed(2) + ' ' + arrow;
+document.getElementById('fc-price-range').textContent = 'Range: ₹' + lo + ' – ₹' + hi;
 
 function setSignal(vol,regime){
   const box=document.getElementById('signal-box');
@@ -418,6 +432,7 @@ new Chart(document.getElementById('priceChart'),{
 });
 
 // ── Time range selector ───────────────────────────────────────────────────────
+let fullMode = false;
 function setRange(range) {
   document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
