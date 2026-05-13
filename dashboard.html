@@ -84,6 +84,9 @@ h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
 .metric-select-row label{font-size:12px;color:var(--muted);font-weight:500;}
 .metric-select-row select{width:auto;min-width:160px;margin-bottom:0;}
 .footer{text-align:center;color:var(--dim);font-size:11px;padding:2rem 0 1rem;}
+.range-btn{padding:5px 14px;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);font-family:var(--sans);font-size:12px;cursor:pointer;transition:all .2s;}
+.range-btn:hover{border-color:var(--blue);color:var(--blue);}
+.range-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
 </style>
 </head>
 <body>
@@ -172,6 +175,13 @@ h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
   <hr class="divider">
 
   <h3>Volatility Forecast vs Actual — Full Test Period</h3>
+<div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+  <button class="range-btn active" onclick="setRange('all')">All</button>
+  <button class="range-btn" onclick="setRange('6m')">6M</button>
+  <button class="range-btn" onclick="setRange('3m')">3M</button>
+  <button class="range-btn" onclick="setRange('1m')">1M</button>
+  <button class="range-btn" onclick="setRange('1w')">1W</button>
+</div>
   <p class="caption">Aug 2024 → May 2026 · BiLSTM and GARCH(1,1) vs realised volatility · high-vol regime shaded red</p>
   <div class="chart-card">
     <div class="cw tall"><canvas id="forecastChart"></canvas></div>
@@ -406,6 +416,24 @@ new Chart(document.getElementById('priceChart'),{
   data:{labels:priceLabels,datasets:[{data:priceData,borderColor:'#0a2540',borderWidth:1.5,pointRadius:0,tension:0.3,fill:true,backgroundColor:'rgba(31,92,139,0.06)'}]},
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>' ₹'+c.raw+'/USD'}}},scales:{x:{ticks:{color:TICK,font:FONT,maxTicksLimit:10},grid:{color:GRID}},y:{ticks:{color:TICK,font:FONT,callback:v=>'₹'+v},grid:{color:GRID},min:50}}}
 });
+
+// ── Time range selector ───────────────────────────────────────────────────────
+function setRange(range) {
+  document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  const now = new Date('2026-05-12');
+  let cutoff = new Date('2024-08-16');
+  if(range==='1w') cutoff = new Date(now - 7*24*60*60*1000);
+  else if(range==='1m') cutoff = new Date(now.getFullYear(), now.getMonth()-1, now.getDate());
+  else if(range==='3m') cutoff = new Date(now.getFullYear(), now.getMonth()-3, now.getDate());
+  else if(range==='6m') cutoff = new Date(now.getFullYear(), now.getMonth()-6, now.getDate());
+  const idx = DATES.map((_,i)=>i).filter(i=>new Date(DATES[i])>=cutoff);
+  fcChart.data.labels = idx.map(i=>DATES[i]);
+  fcChart.data.datasets[0].data = idx.map(i=>actualPct[i]);
+  fcChart.data.datasets[1].data = idx.map(i=>bilstmPct[i]);
+  fcChart.data.datasets[2].data = idx.map(i=>garchPct[i]);
+  fcChart.update();
+}
 
 // ── Filters ───────────────────────────────────────────────────────────────────
 function applyFilters(){
