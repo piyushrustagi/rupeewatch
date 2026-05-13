@@ -1,250 +1,142 @@
-# RupeeWatch: INR/USD Exchange Rate Volatility Forecasting
+# RupeeWatch — INR/USD Volatility Forecasting
 
-### A Reproducible Computational Economics Pipeline using Econometric and AI Models
-
-> **Course:** Computational Thinking and Programming using AI (ECO-6810)
-> **Team:** Arushi Sareen · Piyush Rustagi · Saburi Kapoor
-> **Project Type:** Computational Macroeconomics and AI Forecasting Pipeline
-
----
-
-## Project Overview
-
-The Indian Rupee (INR) is one of the most actively traded emerging-market currencies and is highly sensitive to global risk sentiment, crude oil shocks, US dollar strength, monetary policy changes, and macroeconomic uncertainty.
-
-Traditional econometric volatility models capture volatility clustering well but struggle during structural breaks and regime changes. Modern machine learning approaches can capture non-linear temporal patterns but often lack strong benchmark comparison and economic interpretation.
-
-**RupeeWatch** is a reproducible computational economics project that builds a forecasting workflow for INR/USD volatility using econometric benchmarks, regression-based forecasting, macroeconomic feature engineering, and machine learning models.
-
-The project is designed as an iterative AI-enabled forecasting pipeline for the course:
-
-> **Computational Thinking and Programming using AI (ECO-6810)**
+**Course:** ECO-6810 Computational Thinking and Programming using AI  
+**Team:** Arushi Sareen · Piyush Rustagi · Saburi Kapoor  
+**Project type:** Predictive  
+**Repo:** piyushrustagi/rupeewatch  
+**Dashboard:** https://piyushrustagi.github.io/rupeewatch/dashboard.html
 
 ---
 
 ## Research Question
 
-> Does incorporating macroeconomic indicators and volatility features improve INR/USD volatility forecasting relative to standard benchmark approaches?
+Can a GARCH(1,1) volatility model provide actionable next-day INR/USD
+volatility forecasts that help a corporate treasury desk decide when
+to review its hedge ratio — and does it outperform a simple regression
+baseline?
 
-Secondary questions include:
+**Stakeholder:** Corporate treasury desk managing USD payables/receivables.
 
-- How do volatility regimes affect forecasting performance?
-- Can machine learning models improve predictive accuracy over econometric benchmarks?
-- Which macroeconomic variables appear most relevant during periods of stress?
+**Decision rule:**
 
----
-
-## Core Evaluation Framework
-
-### Outcome Variable
-1-day-ahead INR/USD realized volatility measured using daily percentage returns.
-
-### Forecast Horizon
-1 trading day ahead.
-
-### Baseline Model
-Linear regression using:
-- lagged returns
-- rolling 5-day volatility
-
-### Primary Metric
-Held-out RMSE on the test dataset.
-
-### Success Threshold
-The project target is to achieve at least 5% lower RMSE than the regression baseline using an extended forecasting model.
-
-The current project focuses on building a reproducible forecasting pipeline for 1-day-ahead INR/USD realized volatility.
-
-### Core Workflow
-
-1. INR/USD exchange-rate data ingestion
-2. Data preprocessing and feature engineering
-3. Lagged-return and rolling-volatility feature construction
-4. Linear regression forecasting baseline
-5. Held-out RMSE evaluation
-6. Automated JSON metric export
-
-### Optional Extensions
-
-The following components are planned as extensions after the core evaluation pipeline is stable:
-
-- GARCH volatility benchmarks
-- Bidirectional LSTM forecasting
-- Hidden Markov Model regime detection
-- Dashboard and visualization layer
-- Policy-event analysis
+| Forecast Vol | Risk State | Action |
+|---|---|---|
+| < 5% | Normal | Maintain standard hedge ratio |
+| 5–8% | Elevated | Review hedge ratio |
+| > 8% | Stress | Hedge more aggressively |
 
 ---
 
-## Data Sources
-
-| Feature               | Source                     | Frequency |
-| --------------------- | -------------------------- | --------- |
-| INR/USD Exchange Rate | Yahoo Finance (`USDINR=X`) | Daily     |
-| VIX Index             | FRED                       | Daily     |
-| WTI Crude Oil         | FRED                       | Daily     |
-| US Dollar Index (DXY) | FRED                       | Daily     |
-| India Interest Rate   | FRED                       | Monthly   |
-| US Federal Funds Rate | FRED                       | Daily     |
-
-All datasets are publicly available.
-
-## Data Source Probes
-
-### Successfully Tested
-- INR/USD exchange-rate pipeline using Yahoo Finance (`USDINR=X`)
-- Local cached dataset generated at `data/raw/usdinr.csv`
-
-### Planned Integrations
-- VIX (FRED)
-- DXY (FRED)
-- WTI Crude Oil (FRED)
-- Federal Funds Rate (FRED)
-
----
-
-## Repository Structure
-
-```text
-rupeewatch/
-│
-├── data/
-│   └── raw/
-│       └── usdinr.csv
-│
-├── outputs/
-│   ├── baseline_metric.json
-│   ├── primary_metric.json
-│   └── milestone_manifest.json
-│
-├── src/
-│   └── download_data.py
-│
-├── main.py
-├── README.md
-├── CHARTER.md
-├── pyproject.toml
-├── uv.lock
-└── .gitignore
-```
-
----
-
-## Implementation Status
-
-### Completed
-
-- Reproducible GitHub repository setup
-- Executable pipeline using `uv`
-- INR/USD data ingestion pipeline
-- Local cached dataset generation
-- Automated output generation
-- Feature engineering pipeline
-- Rolling volatility computation
-- Regression baseline workflow
-- JSON metric export pipeline
-
-### In Progress
-
-- Regression baseline refinement
-- RMSE evaluation pipeline
-- Macroeconomic feature integration
-
-### Planned Extensions
-
-- GARCH volatility benchmark
-- Bidirectional LSTM forecasting model
-- HMM volatility regime detection
-- RBI policy-event analysis
-- Streamlit dashboard
-- Model comparison framework
-
----
-
-## Tech Stack
-
-| Category         | Libraries                   |
-| ---------------- | --------------------------- |
-| Data Processing  | pandas, numpy               |
-| Data APIs        | yfinance, fredapi           |
-| Econometrics     | arch, statsmodels           |
-| Machine Learning | scikit-learn, tensorflow    |
-| Regime Detection | hmmlearn                    |
-| Visualization    | matplotlib, seaborn, plotly |
-| Workflow         | uv, GitHub                  |
-
----
-
-## Setup
-
-Install dependencies:
+## Run the Project
 
 ```bash
 uv sync
-```
-
----
-
-## Running the Project
-
-Run from repository root:
-
-```bash
 uv run main.py
 ```
 
 ---
 
-## Expected Outputs
+## Expected Output
 
-Running the pipeline generates:
-
-```text
-outputs/
-├── baseline_metric.json
-├── primary_metric.json
-└── milestone_manifest.json
+```
+=== RupeeWatch Pipeline ===
+Fetching INR/USD data from Yahoo Finance...
+Regression baseline RMSE: 0.004407
+GARCH(1,1) RMSE: 0.013282
+Outputs saved to outputs/
+Done. Run: uv run main.py
 ```
 
 ---
 
-## Current Baseline Workflow
+## Output Files
 
-The current baseline workflow:
-
-1. Loads INR/USD exchange-rate data
-2. Computes daily returns
-3. Generates lagged-return features
-4. Computes rolling volatility
-5. Runs linear regression forecasting
-6. Computes RMSE
-7. Exports metrics to JSON files
+| File | Contains |
+|------|----------|
+| `outputs/baseline_metric.json` | Regression baseline RMSE: 0.004407 |
+| `outputs/primary_metric.json` | GARCH RMSE: 0.013282, passed: false |
+| `outputs/milestone_manifest.json` | Charter lock, source probes, run command |
+| `outputs/next_day_forecast.json` | Next trading day volatility forecast |
 
 ---
 
-## Current Limitations
+## Model Results
 
-- The current pipeline relies primarily on lagged-return and rolling-volatility features.
-- Macroeconomic variables are not yet fully integrated into the forecasting workflow.
-- The current implementation focuses on establishing a reproducible baseline evaluation pipeline before advanced modeling extensions.
+| Model | RMSE | MAE | MAPE | Dir. Accuracy |
+|-------|------|-----|------|---------------|
+| Linear Regression (baseline) | 0.004407 | 0.003201 | — | — |
+| GARCH(1,1) | 0.013282 | 0.011281 | 50.81% | 2.56% |
+| EGARCH(1,1) | 0.011572 | 0.008056 | 23.87% | 2.96% |
+| BiLSTM (bias-corrected) | 0.014963 | 0.010332 | 28.14% | 46.98% |
 
----
-
-## Planned Extensions
-
-Future project extensions may include:
-
-- Regime-aware forecasting using Hidden Markov Models
-- SHAP-based feature interpretability
-- Real-time data updates
-- Multi-currency forecasting framework
-- Temporal Fusion Transformer (TFT) experimentation
+**Key finding:** GARCH did not beat the regression baseline on RMSE
+(passed: false). This null result is reported honestly. BiLSTM
+outperforms GARCH on MAE (+8.4%), MAPE (+44.6%), and directional
+accuracy (+44pp).
 
 ---
 
-## Academic Context
+## Repository Structure
 
-This project is being developed as part of **Computational Thinking and Programming using AI (ECO-6810)**, with emphasis on computational workflows, reproducibility, economic data pipelines, econometric benchmarking, and AI-assisted forecasting systems.
+```
+rupeewatch/
+├── data/raw/
+│   ├── usdinr.csv
+│   ├── probe_vix.csv
+│   ├── probe_dxy.csv
+│   ├── probe_oil.csv
+│   └── probe_ffr.csv
+├── notebook/
+│   └── RupeeWatch(CPAI).ipynb
+├── outputs/
+│   ├── baseline_metric.json
+│   ├── primary_metric.json
+│   ├── milestone_manifest.json
+│   └── next_day_forecast.json
+├── .github/workflows/
+│   └── daily_forecast.yml
+├── main.py
+├── report.md
+├── AI_Usage_Log.md
+├── CHARTER.md
+└── README.md
+```
 
 ---
 
+## Data Sources
+
+| Source | Series | Access |
+|--------|--------|--------|
+| Yahoo Finance | USDINR=X | `yfinance` — no key needed |
+| FRED API | VIXCLS — VIX | Free API key |
+| FRED API | DTWEXBGS — DXY | Free API key |
+| FRED API | DCOILWTICO — WTI Crude | Free API key |
+| FRED API | DFF — Fed Funds Rate | Free API key |
+
+FRED probe CSVs committed to `data/raw/` — pipeline runs without a FRED key.
+
+---
+
+## Full Pipeline
+
+The complete analysis pipeline is in `notebook/RupeeWatch(CPAI).ipynb`:
+
+1. Data ingestion — INR/USD + 5 FRED macro series
+2. EDA — stationarity, ARCH effects, fat tails
+3. Regime detection — 2-state Gaussian HMM (75% low, 25% high vol)
+4. Feature engineering — 49 features
+5. GARCH(1,1) + EGARCH(1,1) benchmarks
+6. BiLSTM — 3-layer bidirectional LSTM with macro + regime features
+7. Policy event study — 19 macro events
+8. Next-day treasury briefing
+
+---
+
+## Automated Daily Forecast
+
+A GitHub Action runs every weekday at 5:30 PM IST:
+- Fetches fresh INR/USD data
+- Runs GARCH pipeline
+- Saves updated `outputs/next_day_forecast.json`
+- Dashboard reads the updated forecast automatically
