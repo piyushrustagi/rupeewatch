@@ -331,10 +331,10 @@ fetch('https://raw.githubusercontent.com/piyushrustagi/rupeewatch/main/outputs/n
     document.getElementById('fc-vol').textContent = gp + '%';
     document.getElementById('fc-daily').textContent = '±' + (g/Math.sqrt(252)*100).toFixed(2) + '%';
     document.getElementById('fc-paise').textContent = '±' + (g/Math.sqrt(252)*95.67*100).toFixed(0) + 'p';
-    document.getElementById('fc-price').textContent = '₹' + (d.current_price || 95.67).toFixed(2) + (g > 0.07 ? ' ↑' : ' →');
-    const lom = ((d.current_price||95.67) - (d.current_price||95.67)*g/Math.sqrt(252)).toFixed(2);
-    const him = ((d.current_price||95.67) + (d.current_price||95.67)*g/Math.sqrt(252)).toFixed(2);
-    document.getElementById('fc-price-range').textContent = 'Range: ₹' + lom + ' – ₹' + him;
+    const price = d.current_price || 95.67;
+    const direction = g > 0.07 ? ' ↑ Pressure' : g > 0.04 ? ' → Sideways' : ' ↓ Stable';
+    document.getElementById('fc-price').textContent = '₹' + price.toFixed(2) + direction;
+    document.getElementById('fc-price-range').textContent = 'Range: ₹' + (d.predicted_price_lo || (price - price*g/Math.sqrt(252))).toFixed(2) + ' – ₹' + (d.predicted_price_hi || (price +     price*g/Math.sqrt(252))).toFixed(2);
     document.getElementById('dt').textContent = d.based_on_data_until || '—';
     document.getElementById('ff').textContent = d.forecast_date || '—';
     document.getElementById('banner').className = 'banner ' + cls;

@@ -203,14 +203,24 @@ manifest = {
     ]
 }
 
+last_price = float(df["Close"].iloc[-1])
+daily_move = last_price * next_vol / (252 ** 0.5)
+price_lo   = round(last_price - daily_move, 4)
+price_hi   = round(last_price + daily_move, 4)
+
 next_day_forecast = {
-    "forecast_date":        str(next_date.date()),
-    "based_on_data_until":  str(last_date.date()),
-    "garch_forecast_vol":   round(next_vol, 6),
+    "forecast_date":           str(next_date.date()),
+    "based_on_data_until":     str(last_date.date()),
+    "current_price":           round(last_price, 4),
+    "garch_forecast_vol":      round(next_vol, 6),
     "regression_forecast_vol": round(reg_next_vol, 6),
-    "unit":                 "annualised_volatility",
-    "model":                "GARCH(1,1) + Linear Regression",
-    "note":                 "1-day-ahead INR/USD realised volatility forecast"
+    "predicted_price_lo":      price_lo,
+    "predicted_price_hi":      price_hi,
+    "predicted_price_mid":     round(last_price, 4),
+    "unit":                    "annualised_volatility",
+    "model":                   "GARCH(1,1) + Linear Regression",
+    "note":                    "1-day-ahead INR/USD realised volatility forecast"
+
 }
 
 with open(OUTPUT_DIR / "baseline_metric.json", "w") as f:
