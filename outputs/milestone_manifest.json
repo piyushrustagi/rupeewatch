@@ -3,11 +3,34 @@
     "charter_locked": true,
     "data_pipeline_complete": true,
     "regression_baseline_complete": true,
-    "primary_model_complete": false,
+    "primary_model_complete": true,
+    "run_command": "uv run main.py",
+    "data_through": "2026-05-12",
     "sources": [
-        "yfinance:USDINR=X",
-        "FRED:VIXCLS",
-        "FRED:DCOILWTICO",
-        "FRED:FEDFUNDS"
+        {
+            "name": "yfinance:USDINR=X",
+            "probe": "data/raw/usdinr.csv",
+            "status": "ok"
+        },
+        {
+            "name": "FRED:VIXCLS",
+            "probe": "data/raw/probe_vix.csv",
+            "status": "ok"
+        },
+        {
+            "name": "FRED:DTWEXBGS",
+            "probe": "data/raw/probe_dxy.csv",
+            "status": "ok"
+        },
+        {
+            "name": "FRED:DCOILWTICO",
+            "probe": "data/raw/probe_oil.csv",
+            "status": "ok"
+        },
+        {
+            "name": "FRED:FEDFUNDS",
+            "probe": "data/raw/probe_ffr.csv",
+            "status": "ok"
+        }
     ]
 }

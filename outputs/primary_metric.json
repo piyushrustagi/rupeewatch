@@ -1,8 +1,8 @@
 {
     "metric_name": "RMSE",
-    "model": "bilstm_planned",
-    "value": 0.003068502580229573,
-    "threshold": 0.00291508,
+    "model": "garch_1_1",
+    "value": 0.019429,
+    "threshold": 0.00453656,
     "passed": false,
-    "note": "BiLSTM in progress; baseline RMSE reported until model is complete"
+    "note": "GARCH(1,1) rolling 1-step-ahead vs regression baseline. BiLSTM pipeline in notebooks/cp_and_ai.ipynb."
 }

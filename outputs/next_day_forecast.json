@@ -1,0 +1,9 @@
+{
+    "forecast_date": "2026-05-13",
+    "based_on_data_until": "2026-05-12",
+    "garch_forecast_vol": 0.092942,
+    "regression_forecast_vol": 0.113228,
+    "unit": "annualised_volatility",
+    "model": "GARCH(1,1) + Linear Regression",
+    "note": "1-day-ahead INR/USD realised volatility forecast"
+}
