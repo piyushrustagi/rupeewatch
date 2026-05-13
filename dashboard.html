@@ -312,6 +312,40 @@ const arrow = lastBiLSTM > 0.07 ? '↑' : '→';
 document.getElementById('fc-price').textContent = '₹' + nextPrice.toFixed(2) + ' ' + arrow;
 document.getElementById('fc-price-range').textContent = 'Range: ₹' + lo + ' – ₹' + hi;
 
+// ── Live forecast from GitHub Actions output ──────────────────────────────────
+fetch('https://raw.githubusercontent.com/piyushrustagi/rupeewatch/main/outputs/next_day_forecast.json')
+  .then(r => r.json())
+  .then(d => {
+    const g = d.garch_forecast_vol;
+    const r = d.regression_forecast_vol;
+    const gp = (g * 100).toFixed(2);
+    const rp = (r * 100).toFixed(2);
+    const p = g * 100;
+    const cls = p < 5 ? 'normal' : p < 8 ? 'elevated' : 'stress';
+    const actions = {
+      normal: 'No urgent action. Maintain existing hedge ratios. Review FX exposure on your regular monthly cycle.',
+      elevated: 'Consider layering partial forward covers on near-term USD payables. Do not wait for further INR depreciation. Monitor VIX daily for escalation signals.',
+      stress: 'Immediate action required. Review all open USD exposure now. Layer forward covers at current rates before further INR weakness. Escalate to CFO if exposure exceeds threshold.'
+    };
+    const states = {normal:'Normal', elevated:'Elevated', stress:'Stress'};
+    document.getElementById('fc-vol').textContent = gp + '%';
+    document.getElementById('fc-daily').textContent = '±' + (g/Math.sqrt(252)*100).toFixed(2) + '%';
+    document.getElementById('fc-paise').textContent = '±' + (g/Math.sqrt(252)*95.67*100).toFixed(0) + 'p';
+    document.getElementById('fc-price').textContent = '₹' + (d.current_price || 95.67).toFixed(2) + (g > 0.07 ? ' ↑' : ' →');
+    const lom = ((d.current_price||95.67) - (d.current_price||95.67)*g/Math.sqrt(252)).toFixed(2);
+    const him = ((d.current_price||95.67) + (d.current_price||95.67)*g/Math.sqrt(252)).toFixed(2);
+    document.getElementById('fc-price-range').textContent = 'Range: ₹' + lom + ' – ₹' + him;
+    document.getElementById('dt').textContent = d.based_on_data_until || '—';
+    document.getElementById('ff').textContent = d.forecast_date || '—';
+    document.getElementById('banner').className = 'banner ' + cls;
+    document.getElementById('rs').textContent = states[cls];
+    document.getElementById('at').textContent = actions[cls];
+    console.log('Live forecast loaded:', d.forecast_date);
+  })
+  .catch(() => {
+    console.log('Live forecast unavailable — showing last known values');
+  });
+
 function setSignal(vol,regime){
   const box=document.getElementById('signal-box');
   const title=document.getElementById('signal-title');
