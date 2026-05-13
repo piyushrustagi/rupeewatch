@@ -182,7 +182,7 @@ h3{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
   <h3>Volatility Forecast vs Actual — Full Test Period</h3>
 <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
   <button class="range-btn active" onclick="setRange('all')">Test Period</button>
-<button class="range-btn" onclick="setRange('full')">All</button>>
+<button class="range-btn" onclick="setRange('full')">All</button>
   <button class="range-btn" onclick="setRange('6m')">6M</button>
   <button class="range-btn" onclick="setRange('3m')">3M</button>
   <button class="range-btn" onclick="setRange('1m')">1M</button>
@@ -441,11 +441,10 @@ function setRange(range) {
   const now = new Date('2026-05-12');
   let cutoff = new Date('2024-08-16');
 if(range==='full'){
-    const nullPad = new Array(FULL_DATES.length - DATES.length).fill(null);
-    fcChart.data.labels = FULL_DATES;
-    fcChart.data.datasets[0].data = [...FULL_VOL_PCT, ...actualPct];
-    fcChart.data.datasets[1].data = [...nullPad, ...bilstmPct];
-    fcChart.data.datasets[2].data = [...nullPad, ...garchPct];
+    fcChart.data.labels = DATES;
+    fcChart.data.datasets[0].data = actualPct;
+    fcChart.data.datasets[1].data = bilstmPct;
+    fcChart.data.datasets[2].data = garchPct;
     fcChart.update();
     return;
   }
