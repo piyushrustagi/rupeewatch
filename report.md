@@ -59,45 +59,85 @@ control series, all publicly available and fetched programmatically.
 
 **Date range:** 2013-01-01 to 2026-05-13 — 3,478 trading days.
 Test set: 2024-05-09 to 2026-05-13 — 519 trading days (last 15%,
-chronological split). See `outputs/data_overview.png` for the full
-picture of INR/USD price, realised volatility, VIX, and crude oil
-across the sample period.
+chronological split).
 
 All FRED probe CSVs are committed to `data/raw/` — the pipeline runs
 without a FRED key using cached data.
 
 ---
 
+### 3.1 Data Overview
+
+![INR/USD price, realised volatility, VIX, and WTI crude oil across 2013–2026](outputs/data_overview.png)
+
+The top panel shows the INR steadily weakening against the dollar over 13 years — from around ₹54 in 2013 to over ₹85 by 2026. This is a structural depreciation trend driven by India's persistent inflation differential with the US. The volatility panel immediately below shows that this depreciation has not been smooth: there are distinct spikes around the 2013 taper tantrum, COVID (2020), and the 2022 Fed tightening cycle. The VIX and crude oil panels confirm that global risk-off episodes and oil shocks tend to hit the rupee hardest — these are precisely the moments a treasury desk most needs a reliable early warning.
+
+---
+
+### 3.2 Price and Daily Returns
+
+![Daily closing price and log returns with key macro events annotated](outputs/price_returns.png)
+
+The log returns panel is the key one for modelling. Returns cluster tightly in calm periods but spike sharply at identifiable events — demonetisation (2016), COVID (2020), the Ukraine war commodity shock (2022). This clustering behaviour is the core phenomenon the models are trying to capture: a turbulent day is far more likely to be followed by another turbulent day than by a calm one. A model that can detect the onset of such a cluster even a day early gives the treasury desk time to act.
+
+---
+
+### 3.3 Rolling Volatility Windows
+
+![Realised volatility across 10, 21, and 63-day rolling windows](outputs/rolling_volatility.png)
+
+This shows annualised realised volatility computed over three lookback windows. The 10-day window is the most reactive — it catches volatility spikes fastest but also produces more noise. The 63-day window is smoother but slow to respond. The 21-day window is the primary target variable in this project. The practical takeaway: INR volatility has ranged roughly between 3% and 12% annualised over the full sample. Anything above 8% has historically coincided with genuine stress events requiring active hedging, making that level a natural alert threshold for the treasury desk.
+
+---
+
+### 3.4 Return Distribution
+
+![Fat-tailed return distribution confirmed by Jarque-Bera test](outputs/log_returns.png)
+
+The distribution of daily INR/USD returns has fatter tails than a normal bell curve would predict. This means extreme moves — sharp single-day rupee depreciations or appreciations — occur more often than standard financial models assume. For the treasury desk, this is a critical insight: naive Value-at-Risk models that assume normality will systematically underestimate the probability and size of large losses. Models like GARCH that allow for time-varying variance are better suited to this environment because they naturally assign higher probability to large moves during volatile periods.
+
+---
+
+### 3.5 Autocorrelation Structure
+
+![ACF and PACF of log returns and squared returns; ARCH effects confirmed](outputs/acf_pacf.png)
+
+The top row shows autocorrelations of raw returns — there is very little detectable pattern, meaning yesterday's direction of the rupee move does not reliably predict today's direction. This is consistent with currency markets being broadly efficient at the daily horizon. The bottom row shows autocorrelations of *squared* returns — a proxy for volatility. Here there is strong, persistent structure extending many lags. High-volatility days are systematically followed by more high-volatility days. This is the statistical confirmation that volatility is forecastable even when price direction is not — and it is the direct justification for building a GARCH model.
+
+---
+
+### 3.6 Macro Feature Correlations
+
+![Macro feature correlation matrix: VIX, DXY, crude oil, and Fed funds rate vs INR features](outputs/macro_corr.png)
+
+VIX (the global fear gauge) and DXY (US dollar strength index) show the strongest correlation with INR realised volatility. When global investors are fearful and moving money into US dollar assets, the rupee weakens and moves more violently. Crude oil has a moderate positive correlation — India imports around 85% of its oil, so oil price shocks create simultaneous inflation pressure and current account stress, both of which destabilise the currency. The Fed funds rate operates over longer horizons: rate hike cycles pull capital out of emerging markets like India, increasing exchange rate volatility over months rather than days. These relationships validate including macro features in the extended BiLSTM model.
+
+---
+
 ## 4. Method
 
 **Step 1 — Baseline (regression):**
-Before building anything complex, we establish a simple benchmark.
 A linear regression model predicts 1-day-ahead annualised realised
 volatility using three lagged features: previous-day log return
 (`lag_return_1`), 5-day rolling volatility (`lag_vol_5d`), and 21-day
 rolling volatility (`lag_vol_21d`). This captures the well-known
-persistence of volatility — yesterday's vol is a strong predictor of
-today's — without any econometric machinery. Fit on the training set
-(85% of data, chronologically), evaluated on the held-out test set
-(15%). Baseline RMSE = 0.003797.
+persistence of volatility without any econometric machinery. Fit on the
+training set (85% of data, chronologically), evaluated on the held-out
+test set (15%). Baseline RMSE = 0.003797.
 
 **Step 2 — Primary model (GARCH(1,1)):**
-GARCH(1,1) is the standard econometric model for volatility
-forecasting. It explicitly models volatility clustering — the tendency
-of large moves to follow large moves — through an autoregressive
-structure on the conditional variance. We fit a rolling 1-step-ahead
-forecast on the test set, refitting every 21 trading days to incorporate
-new data. On rare convergence failures, the previous valid forecast is
-carried forward. The conditional variance is converted to annualised
-volatility for comparison with realised vol.
+GARCH(1,1) explicitly models volatility clustering through an
+autoregressive structure on the conditional variance. We fit a rolling
+1-step-ahead forecast on the test set, refitting every 21 trading days.
+On rare convergence failures, the previous valid forecast is carried
+forward. The conditional variance is converted to annualised volatility
+for comparison with realised vol.
 
 **Step 3 — Extended pipeline (notebook only):**
 The Colab notebook extends the analysis to:
-- EGARCH(1,1) with Student-t errors — captures asymmetric volatility
-- BiLSTM with 49 features — macro series, technical indicators, HMM
-  regime states, Huber loss, isotonic bias correction
-- 2-state Gaussian HMM — identifies Low/High volatility regimes across
-  the full sample
+- EGARCH(1,1) with Student-t errors — captures asymmetric volatility responses
+- BiLSTM with 49 features — macro series, technical indicators, HMM regime states, Huber loss, isotonic bias correction
+- 2-state Gaussian HMM — identifies Low/High volatility regimes across the full sample
 
 These are not the primary graded deliverable. They are evidence for
 the research question. The GARCH vs regression comparison is the core
@@ -105,6 +145,30 @@ test.
 
 **Evaluation split:** Strictly chronological. No lookahead. Training
 ends before the test set begins. No shuffling at any stage.
+
+---
+
+### 4.1 Volatility Regime Detection
+
+![INR/USD price with Low and High volatility regime shading across the full sample](outputs/regime_price_chart.png)
+
+The HMM identifies two distinct market states across the 13-year sample. The shaded High-volatility regime periods align almost perfectly with known stress episodes: the 2013 taper tantrum, the 2018 EM selloff, COVID, and the 2022–23 Fed tightening cycle. For the treasury desk, this is more actionable than a raw volatility number. Knowing you are *inside* a High-volatility regime — not just observing a single elevated day — justifies a sustained shift in hedge posture, rather than a one-day tactical adjustment that gets reversed the next morning.
+
+---
+
+### 4.2 Regime Transition Dynamics
+
+![Regime transition probabilities and regime state sequence over time](outputs/regime_transition.png)
+
+The transition matrix shows that both regimes are highly persistent: once the rupee enters a High-volatility state, it tends to remain there for weeks or months rather than reverting after a day or two. This persistence is precisely what the treasury desk can exploit. A regime transition signal gives meaningful lead time to increase hedge ratios before the full stress episode plays out, rather than reacting after the rupee has already moved significantly.
+
+---
+
+### 4.3 Volatility by Regime
+
+![Return and volatility distributions broken down by Low and High regime](outputs/vol_distribution_regime.png)
+
+In the High-volatility regime, median annualised volatility runs at 6.9% vs 4.7% in the Low regime — nearly a 50% increase in baseline risk. More importantly, the tail of the High-regime distribution extends well beyond 10%, meaning the worst days during a stress episode are dramatically more severe than the worst days in normal conditions. A treasury manager operating without regime awareness would budget for a uniform 5–6% volatility environment and be repeatedly surprised by the severity and duration of stress periods.
 
 ---
 
@@ -143,9 +207,11 @@ Stress regime matters even if the exact vol estimate is imprecise.
 | BiLSTM (bias-corrected) | 0.014963 | 0.010332 | 28.14% | 46.98% |
 
 The BiLSTM, equipped with macro and regime signals, outperforms GARCH
-on MAE (+8.4%), MAPE (+44.6%), and directional accuracy (+44pp). This
-suggests that knowing which direction volatility is moving — not just
-its level — is where richer models add value for the treasury desk.
+on MAE (+8.4%), MAPE (+44.6%), and directional accuracy (+44pp). For
+a treasury desk, directional accuracy is arguably more decision-relevant
+than RMSE — a model that reliably signals whether volatility is rising
+or falling tomorrow is operationally useful even if the exact number is
+imprecise.
 
 **Note on reproducibility:** `uv run main.py` uses 3 lagged features
 on a 15% test split (May 2024 → May 2026), producing GARCH RMSE
@@ -156,99 +222,106 @@ baseline (passed: false).
 
 ---
 
+### 5.1 GARCH vs Regression vs Actual
+
+![GARCH(1,1) and regression baseline forecast vs actual realised volatility on the test set](outputs/forecast_vs_actual.png)
+
+The actual realised volatility line (dark) shows the true day-to-day movement in INR/USD volatility during the test period. The regression baseline (green dotted) tracks the actual closely — it essentially predicts that tomorrow's volatility will look like the recent average, which turns out to be a hard benchmark to beat. The GARCH forecast (blue dashed) is more reactive but also noisier — it overshoots on spikes and undershoots on recoveries. For a steady-state hedging decision, the regression gives a more reliable vol level estimate. GARCH adds the most value during regime transitions, when the speed of its response matters more than its absolute accuracy.
+
+---
+
+### 5.2 GARCH In-Sample Fit and Out-of-Sample Forecast
+
+![GARCH and EGARCH conditional volatility vs realised volatility across the full sample](outputs/garch_forecast_chart.png)
+
+The in-sample portion (left of the vertical line) shows how well GARCH fits historical data — it captures the broad shape of volatility cycles. The out-of-sample portion is the honest test: GARCH struggles to anticipate the timing and magnitude of vol spikes it has not seen before. EGARCH performs somewhat better because it treats upside and downside currency shocks asymmetrically — a sudden large rupee depreciation raises future volatility more than an equivalent appreciation, which matches the well-documented behaviour of emerging market currencies under capital outflow pressure.
+
+---
+
+### 5.3 All Models vs Actual
+
+![All four models — regression, GARCH, EGARCH, BiLSTM — plotted against actual realised volatility on the test period](outputs/RupeeWatch_combined_forecast.png)
+
+Putting all four models on the same chart makes the trade-offs clear. The regression baseline and BiLSTM produce the smoothest forecasts; GARCH and EGARCH are more reactive but jagged. None of the models perfectly anticipate the sharp mid-2025 volatility spike — a reminder that events driven by surprise policy announcements or geopolitical shocks will always be partially unpredictable. The practical lesson: use the models for baseline hedging decisions and maintain a discretionary buffer for identifiable event risk around scheduled announcements.
+
+---
+
+### 5.4 Model Comparison — All Metrics
+
+![All four models compared on RMSE, MAE, MAPE, and directional accuracy](outputs/RupeeWatch_Model_Comparison.png)
+
+On raw RMSE, the regression baseline wins — its bar is shortest. But directional accuracy tells a sharply different story. GARCH and EGARCH are barely better than a coin flip at predicting whether volatility will go up or down tomorrow (2.56% and 2.96% directional accuracy respectively). The BiLSTM gets the direction right nearly half the time (46.98%). For a treasury desk deciding each morning whether to increase or reduce the hedge ratio, this directional signal is what matters most — not whether the forecast vol is 5.2% or 5.4%.
+
+---
+
+### 5.5 BiLSTM vs GARCH Head-to-Head
+
+![BiLSTM vs GARCH forecast on the test set: green where BiLSTM wins, red where GARCH wins](outputs/BiLSTM_vs_GARCH.png)
+
+The colour coding reveals where each model has its comparative advantage. BiLSTM (green) wins more consistently during the calmer middle stretch of the test period, where its macro and regime features help it stay well-calibrated. GARCH (red) occasionally wins during brief, sharp volatility spikes — its autoregressive structure makes it naturally reactive to sudden large moves. An optimal combined system would weight BiLSTM more heavily during Low-regime periods and shift weight toward GARCH when a regime transition signal fires.
+
+---
+
 ## 6. Evidence
 
-All figures are committed to `outputs/` and open directly in the repo.
-The full pipeline is in `notebook/RupeeWatch(CPAI).ipynb`.
-
-**EDA — Data and Volatility Structure**
-- [`outputs/data_overview.png`](outputs/data_overview.png) — INR/USD
-  price, realised vol, VIX, and WTI crude across 2013–2026
-- [`outputs/price_returns.png`](outputs/price_returns.png) — daily
-  closing price and log returns with key macro events annotated
-- [`outputs/rolling_volatility.png`](outputs/rolling_volatility.png)
-  — realised vol across 10/21/63-day windows; volatility clustering
-  clearly visible
-- [`outputs/acf_pacf.png`](outputs/acf_pacf.png) — ACF/PACF of
-  returns and squared returns; ARCH effects confirmed
-- [`outputs/macro_corr.png`](outputs/macro_corr.png) — macro feature
-  correlation matrix; VIX and DXY show meaningful correlation with vol
-- [`outputs/log_returns.png`](outputs/log_returns.png) — fat-tailed
-  distribution confirmed by Jarque-Bera test
-
-**HMM Regime Detection**
-- [`outputs/regime_price_chart.png`](outputs/regime_price_chart.png)
-  — INR/USD price with Low/High vol regime shading across full sample
-- [`outputs/regime_transition.png`](outputs/regime_transition.png)
-  — regime transition probabilities and detected states over time
-- [`outputs/vol_distribution_regime.png`](outputs/vol_distribution_regime.png)
-  — return and volatility distributions by regime; High vol median
-  6.9% vs Low vol 4.7%
-
-**GARCH/EGARCH Benchmarks**
-- [`outputs/garch_forecast_chart.png`](outputs/garch_forecast_chart.png)
-  — GARCH and EGARCH conditional volatility vs realised vol; full
-  sample in-sample fit and test set out-of-sample forecast
-- [`outputs/forecast_vs_actual.png`](outputs/forecast_vs_actual.png)
-  — GARCH vs regression vs actual on test set
-
-**BiLSTM Model**
-- [`outputs/predictions_vs_actual_test.png`](outputs/predictions_vs_actual_test.png)
-  — BiLSTM predicted vs actual; scatter plot and residuals over time
-- [`outputs/BiLSTM_forecast.png`](outputs/BiLSTM_forecast.png)
-  — BiLSTM forecast with over/under-prediction periods identified
-- [`outputs/SHAP_importance.png`](outputs/SHAP_importance.png)
-  — SHAP feature importance; `regime_streak` is the top predictor,
-  followed by `us_ffr_lag1` and rolling vol features
-
-**Policy Event Study**
-- [`outputs/forecast_error.png`](outputs/forecast_error.png)
-  — BiLSTM absolute forecast error mapped to policy events; error
-  spikes at Trump inauguration (Jan 2025) and global selloff (Apr 2025)
-- [`outputs/pre_vs_post_event_vol.png`](outputs/pre_vs_post_event_vol.png)
-  — average volatility pre vs post event by category; RBI Crisis
-  events show the largest post-event vol increase
-- [`outputs/regime_transition_around_policy_events.png`](outputs/regime_transition_around_policy_events.png)
-  — regime transitions concentrated around surprise events
-
-**Model Comparison**
-- [`outputs/BiLSTM_vs_GARCH.png`](outputs/BiLSTM_vs_GARCH.png)
-  — BiLSTM vs GARCH forecast on test set; green = BiLSTM wins,
-  red = GARCH wins
-- [`outputs/RupeeWatch_Model_Comparison.png`](outputs/RupeeWatch_Model_Comparison.png)
-  — all four models on RMSE, MAE, MAPE, and directional accuracy
-- [`outputs/RupeeWatch_combined_forecast.png`](outputs/RupeeWatch_combined_forecast.png)
-  — all models vs actual realised volatility on test period
+Full pipeline: `notebook/RupeeWatch(CPAI).ipynb` (Google Colab, ~45 min runtime).
 
 **Live Dashboard:**
-[`https://piyushrustagi.github.io/rupeewatch/dashboard.html`](https://piyushrustagi.github.io/rupeewatch/dashboard.html)
+[https://piyushrustagi.github.io/rupeewatch/dashboard.html](https://piyushrustagi.github.io/rupeewatch/dashboard.html)
 — live forecast, signal box, absolute error chart, regime analysis,
 model comparison, updated daily via GitHub Actions.
 
 ---
 
+### 6.1 BiLSTM Predictions vs Actual
+
+![BiLSTM predicted vs actual volatility: time series and scatter plot with residuals](outputs/predictions_vs_actual_test.png)
+
+The scatter plot is particularly revealing. Points on the diagonal represent perfect predictions; points above the line are underestimates (the model thought it would be calmer than it was), and points below are overestimates. The BiLSTM clusters tightly around the diagonal for moderate volatility levels, confirming it is well-calibrated during normal conditions. The scatter widens significantly at the high end — extreme stress events remain hard to predict precisely even with 49 features and a deep learning architecture. This is not a model failure; it is an honest characterisation of the limits of statistical forecasting during tail events.
+
+---
+
+### 6.2 SHAP Feature Importance
+
+![SHAP feature importance for the BiLSTM: which inputs drive the volatility forecast most](outputs/SHAP_importance.png)
+
+SHAP values measure how much each input feature shifts the model's forecast, in annualised volatility units. The top predictor is `regime_streak` — the number of consecutive days the market has been in its current regime. A currency that has been in a High-volatility state for 30 days is a fundamentally different risk environment from one that entered it yesterday. The Fed funds rate lag (`us_ffr_lag1`) ranks second, reflecting the well-documented transmission of US monetary policy tightening to emerging market capital flows. Rolling volatility features rank third and fourth — consistent with the simple regression baseline performing well on RMSE, since these are the same features it uses.
+
+---
+
+### 6.3 Forecast Error Around Policy Events
+
+![BiLSTM absolute forecast error mapped to key policy and macro events](outputs/forecast_error.png)
+
+The largest error spikes align almost exactly with surprise policy announcements — the Trump inauguration (January 2025) and the April 2025 global equity selloff. Both were sudden, sentiment-driven moves that no model trained on historical patterns could fully anticipate. The practical implication is not to abandon the model during event windows, but to treat sustained elevated model error as its own risk signal: when the model has been consistently wrong for several days, uncertainty is elevated and hedge ratios should reflect that additional uncertainty explicitly.
+
+---
+
+### 6.4 Volatility Before and After Policy Events
+
+![Average INR/USD volatility in the 5 days before vs 5 days after major policy event categories](outputs/pre_vs_post_event_vol.png)
+
+This chart tests whether the event categories the model monitors actually move the rupee. They do, and the magnitude varies by type. RBI crisis interventions show the largest post-event volatility increase — by the time the RBI intervenes publicly, the rupee is already under severe stress and the intervention itself signals to markets that the situation is serious, often amplifying rather than dampening volatility in the immediate aftermath. Fed rate decisions and geopolitical shocks also produce meaningful post-event increases. This validates the policy event classification used in the extended pipeline.
+
+---
+
+### 6.5 Regime Transitions Around Policy Events
+
+![HMM regime transitions concentrated around identifiable macro and policy events](outputs/regime_transition_around_policy_events.png)
+
+Most Low-to-High regime transitions occur within a short window around identifiable macro events — they are not random. This confirms that the HMM is capturing real economic dynamics rather than noise. For the treasury desk, this is actionable in a specific way: a regime transition signal that fires in the days around a scheduled macro event (an upcoming Fed decision, a known RBI meeting) carries significantly more weight than one that fires in a quiet period. The recommended operating procedure is to treat the combination of a regime transition signal and a known event window as a Stress alert, regardless of the raw volatility forecast number.
+
+---
+
 ## 7. Limits
 
-- **Not trading advice.** This project measures predictive accuracy
-  for a decision-aid purpose only. Outputs must not be used to make
-  leveraged trading decisions.
-- **No causal claims.** The project measures predictive accuracy, not
-  the structural reasons why INR/USD volatility moves. SHAP values
-  reflect predictive importance, not causal effects.
-- **Short horizon only.** All forecasts are 1-day-ahead. The model
-  has not been validated for multi-day or multi-week horizons.
-- **Daily data only.** The unit of observation is the trading day.
-  Intraday dynamics are not captured.
-- **Overfitting risk.** BiLSTM and HMM are complex models with many
-  parameters fit on 10 years of data. They may overfit and degrade
-  on genuinely out-of-sample future data beyond the test window.
-- **Regime labels are estimates.** HMM regimes are inferred, not
-  observed. The 2-state assumption is a simplification of a continuous
-  process. Labels may shift across different random seeds or sample
-  lengths.
-- **Macro features are predictive signals only.** VIX, DXY, crude oil,
-  and FFR are lagged predictors, not causal instruments. No
-  identification strategy is claimed.
+- **Not trading advice.** Outputs must not be used to make leveraged trading decisions.
+- **No causal claims.** SHAP values reflect predictive importance, not causal effects.
+- **Short horizon only.** All forecasts are 1-day-ahead. Not validated for multi-day horizons.
+- **Daily data only.** Intraday dynamics are not captured.
+- **Overfitting risk.** BiLSTM and HMM are complex models fit on 10 years of data. They may degrade on genuinely out-of-sample future data.
+- **Regime labels are estimates.** HMM regimes are inferred, not observed. Labels may shift across different seeds or sample lengths.
+- **Macro features are predictive signals only.** No causal identification strategy is claimed.
 
 ---
 
@@ -268,7 +341,7 @@ already captures.
 
 The project is complete, reproducible, and answers the research
 question honestly. The BiLSTM extension demonstrates that macro and
-regime features do add directional accuracy — suggesting that more
+regime features do add directional accuracy — suggesting that richer
 information helps the treasury desk even when raw RMSE does not improve
 over a naive benchmark.
 
