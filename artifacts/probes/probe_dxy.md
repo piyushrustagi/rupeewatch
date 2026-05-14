@@ -1,14 +1,14 @@
-\# Source Probe — FRED: DTWEXBGS (US Dollar Index)
+# Source Probe — FRED: DTWEXBGS (US Dollar Index)
 
 
 
-\- \*\*Source name:\*\* FRED API — DTWEXBGS
+- \*\*Source name:\*\* FRED API — DTWEXBGS
 
-\- \*\*Access method:\*\* `fredapi.Fred(api\_key).get\_series('DTWEXBGS')`
+- \*\*Access method:\*\* `fredapi.Fred(api\_key).get\_series('DTWEXBGS')`
 
-\- \*\*URL:\*\* https://fred.stlouisfed.org/series/DTWEXBGS
+- \*\*URL:\*\* https://fred.stlouisfed.org/series/DTWEXBGS
 
-\- \*\*One-row proof:\*\*
+- \*\*One-row proof:\*\*
 
 
 
@@ -20,5 +20,5 @@
 
 
 
-\- \*\*Notes:\*\* Free API key required. Probe cached at `data/raw/probe\_dxy.csv`. Weekly frequency, forward-filled to daily.
+- \*\*Notes:\*\* Free API key required. Probe cached at `data/raw/probe\_dxy.csv`. Weekly frequency, forward-filled to daily.
 
