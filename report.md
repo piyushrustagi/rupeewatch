@@ -116,22 +116,32 @@ VIX (the global fear gauge) and DXY (US dollar strength index) show the stronges
 
 ## 4. Method
 
-**Step 1 — Baseline (regression):**
+### Step 1 — Baseline (regression)
+
 Realised volatility is constructed as the 21-day rolling standard
 deviation of daily log returns, scaled to annualised terms:
-σ_t = std(r_{t-20:t}) × √252
+
+$$
+\sigma_t = \text{std}(r_{t-20:t}) \times \sqrt{252}
+$$
 
 A linear regression model predicts 1-day-ahead annualised realised
 volatility using three lagged features:
 
-$$\hat{\sigma}_t = \beta_0 + \beta_1 r_{t-1} + \beta_2 \sigma^{(5)}_{t-1} + \beta_3 \sigma^{(21)}_{t-1} + \varepsilon_t$$
+$$
+\hat{\sigma}_t = \beta_0 + \beta_1 r_{t-1} + \beta_2 \sigma^{(5)}_{t-1} + \beta_3 \sigma^{(21)}_{t-1} + \varepsilon_t
+$$
 
 where $r_{t-1}$ is the previous day's log return and $\sigma^{(5)}_{t-1}$,
 $\sigma^{(21)}_{t-1}$ are 5-day and 21-day lagged rolling volatilities.
+
 Fit on the training set (85% of data, chronologically), evaluated on
 the held-out test set (15%). Baseline RMSE = 0.003797.
 
-**Step 2 — Primary model (GARCH(1,1)):**
+---
+
+### Step 2 — Primary model (GARCH(1,1))
+
 GARCH assumes returns follow a normal distribution with time-varying
 variance. This assumption is violated in practice — INR/USD returns
 show excess kurtosis (Jarque-Bera test, p < 0.001, see
@@ -140,9 +150,13 @@ underperforms at capturing extreme events.
 
 GARCH(1,1) models time-varying conditional variance through two equations:
 
-$$r_t = \mu + \varepsilon_t, \qquad \varepsilon_t = \sigma_t z_t, \quad z_t \sim \mathcal{N}(0,1)$$
+$$
+r_t = \mu + \varepsilon_t, \qquad \varepsilon_t = \sigma_t z_t, \quad z_t \sim \mathcal{N}(0,1)
+$$
 
-$$\sigma^2_t = \omega + \alpha\, \varepsilon^2_{t-1} + \beta\, \sigma^2_{t-1}$$
+$$
+\sigma^2_t = \omega + \alpha\, \varepsilon^2_{t-1} + \beta\, \sigma^2_{t-1}
+$$
 
 $\alpha$ captures how much yesterday's shock updates today's variance;
 $\beta$ captures how much yesterday's variance persists. Stationarity
@@ -153,7 +167,9 @@ with INR/USD exhibiting long memory in variance.
 The conditional variance is converted to annualised volatility for
 comparison with realised vol:
 
-$$\hat{\sigma}^{\text{ann}}_t = \sqrt{\hat{\sigma}^2_t} \times \frac{1}{100} \times \sqrt{252}$$
+$$
+\hat{\sigma}^{\text{ann}}_t = \sqrt{\hat{\sigma}^2_t} \times \frac{1}{100} \times \sqrt{252}
+$$
 
 where 252 is the number of trading days per year — the standard
 annualisation convention for daily volatility.
@@ -162,8 +178,12 @@ We fit a rolling 1-step-ahead forecast on the test set, refitting every
 21 trading days. On rare convergence failures, the previous valid
 forecast is carried forward.
 
-**Step 3 — Extended pipeline (notebook only):**
+---
+
+### Step 3 — Extended pipeline (notebook only)
+
 The Colab notebook extends the analysis to:
+
 - EGARCH(1,1) with Student-t errors — captures asymmetric volatility responses
 - BiLSTM with 49 features — macro series, technical indicators, HMM
   regime states, Huber loss, isotonic bias correction
@@ -174,7 +194,11 @@ These are not the primary graded deliverable. They are evidence for
 the research question. The GARCH vs regression comparison is the core
 test.
 
-**Evaluation split:** Strictly chronological. Training set: 2013-01-31
+---
+
+### Evaluation split
+
+Strictly chronological. Training set: 2013-01-31
 to 2024-05-09 (2,937 days). Test set: 2024-05-10 to 2026-05-13
 (519 days). No lookahead. No shuffling at any stage.
 ---
