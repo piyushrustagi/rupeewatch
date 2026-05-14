@@ -70,7 +70,7 @@ this project.
 
 The primary metric is out-of-sample RMSE of GARCH(1,1) conditional
 volatility forecasts against realised volatility on the held-out
-test set (last 20% of data, chronological split).
+test set (last 15% of data, chronological split).
 
 The success threshold is: GARCH(1,1) RMSE ≤ 95% of regression
 baseline RMSE (i.e. at least 5% improvement). This threshold is
@@ -95,19 +95,19 @@ regression predicting realised volatility using three lagged features:
 The baseline RMSE on the held-out test set is saved to
 `outputs/baseline_metric.json` in the required format.
 
-**Baseline result:** RMSE = 0.004407 annualised_volatility.
+**Baseline result:** RMSE = 0.003797 annualised_volatility.
 
 ---
 
 ## 5. Falsifiable Hypothesis
 
 GARCH(1,1) will produce a test-set RMSE at least 5% below the
-linear regression baseline RMSE of 0.004407
-(threshold: 0.004187 annualised_volatility), as estimated by
+linear regression baseline RMSE of 0.003797
+(threshold: 0.003607 annualised_volatility), as estimated by
 rolling one-step-ahead conditional variance forecasts on the
-held-out test set (last 20% of data, chronological split).
+held-out test set (last 15% of data, chronological split).
 
-**Current result:** GARCH(1,1) RMSE = 0.013282. `passed: false`.
+**Current result:** GARCH(1,1) RMSE = 0.015329. `passed: false`.
 GARCH did not outperform the regression baseline on RMSE.
 This null result is reported honestly and is consistent with
 the known difficulty of beating simple regression benchmarks
