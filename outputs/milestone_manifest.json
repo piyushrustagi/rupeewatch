@@ -1,6 +1,8 @@
 {
     "repo_runnable": true,
     "charter_locked": true,
+    "baseline_ready": true,
+    "primary_metric_schema_ready": true,
     "data_pipeline_complete": true,
     "regression_baseline_complete": true,
     "primary_model_complete": true,
@@ -33,4 +35,5 @@
             "status": "ok"
         }
     ]
+    
 }
