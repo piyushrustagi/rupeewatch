@@ -132,8 +132,9 @@ $$
 \hat{\sigma}_t = \beta_0 + \beta_1 r_{t-1} + \beta_2 \sigma^{(5)}_{t-1} + \beta_3 \sigma^{(21)}_{t-1} + \varepsilon_t
 $$
 
-where $r_{t-1}$ is the previous day's log return and $\sigma^{(5)}_{t-1}$,
-$\sigma^{(21)}_{t-1}$ are 5-day and 21-day lagged rolling volatilities.
+where $r_{t-1}$ is the previous day's log return and σ_{t-1}^(5) is the
+5-day lagged rolling volatility, and σ_{t-1}^(21) is the 21-day lagged
+rolling volatility.
 
 Fit on the training set (85% of data, chronologically), evaluated on
 the held-out test set (15%). Baseline RMSE = 0.003797.
@@ -194,13 +195,12 @@ These are not the primary graded deliverable. They are evidence for
 the research question. The GARCH vs regression comparison is the core
 test.
 
----
-
 ### Evaluation split
 
 Strictly chronological. Training set: 2013-01-31
 to 2024-05-09 (2,937 days). Test set: 2024-05-10 to 2026-05-13
 (519 days). No lookahead. No shuffling at any stage.
+
 ---
 
 ### 4.1 Volatility Regime Detection
