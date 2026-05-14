@@ -5,4 +5,8 @@
     "threshold": 0.003607,
     "passed": false,
     "note": "GARCH(1,1) rolling 1-step-ahead vs regression baseline. Full pipeline in notebook/RupeeWatch(CPAI).ipynb."
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bb5f8ca (fix primary_metric note path, sync all outputs)
