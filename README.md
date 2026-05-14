@@ -177,6 +177,14 @@ Stable GARCH + regression logic has been moved to `main.py` for clean
 reproducibility. The notebook is the evidence base for the extended
 model results in `report.md`.
 
+**Reproducibility note:**
+`main.py` reproduces the primary graded forecasting pipeline
+(regression baseline + GARCH evaluation). Extended results
+(BiLSTM, HMM, SHAP, EGARCH) are documented in
+`notebook/RupeeWatch(CPAI).ipynb` and `report.md` as
+supplementary analysis.
+
+
 ---
 
 ## Automated Daily Forecast
