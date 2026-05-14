@@ -2,7 +2,7 @@
 
 
 
-\## Committed Files
+## Committed Files
 
 
 
@@ -42,7 +42,7 @@ All data is fetched programmatically in `main.py`:
 
 
 
-\## Access Rules
+## Access Rules
 
 
 
@@ -54,7 +54,7 @@ All data is fetched programmatically in `main.py`:
 
 
 
-\## Intentionally Excluded
+## Intentionally Excluded
 
 
 
