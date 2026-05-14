@@ -31,7 +31,7 @@ forecast volatility and acts on one of three rules:
   RMSE (i.e. at least 5% improvement)
 - **Baseline:** Linear regression on three lagged features —
   previous-day log return, 5-day rolling volatility, 21-day rolling
-  volatility. Baseline RMSE = 0.003796 (from `uv run main.py`).
+  volatility. Baseline RMSE = 0.003797 (from `uv run main.py`).
 
 ---
 
