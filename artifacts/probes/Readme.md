@@ -28,3 +28,4 @@ Examples include:
 - one small JSON or Markdown snippet showing a successful fetch
 
 These are not full analyses; they are lightweight reproducibility checks confirming that the source is valid and reachable.
+Running `main.py` refreshes the underlying datasets and appends newly available observations automatically.
