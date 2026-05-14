@@ -157,11 +157,13 @@ $$
 \sigma^2_t = \omega + \alpha \varepsilon^2_{t-1} + \beta \sigma^2_{t-1}
 $$
 
-$\alpha$ captures how much yesterday's shock updates today's variance;
-$\beta$ captures how much yesterday's variance persists. Stationarity
-requires $\alpha + \beta < 1$. In our estimates, $\alpha + \beta \approx 0.97$,
-indicating strong but stationary volatility persistence — consistent
-with INR/USD exhibiting long memory in variance.
+where $\omega > 0$ is the long-run variance floor, $\alpha$ is the ARCH coefficient
+(weight on last period's squared shock), and $\beta$ is the GARCH coefficient
+(weight on last period's conditional variance). $\alpha$ captures how much
+yesterday's shock updates today's variance; $\beta$ captures how much yesterday's
+variance persists. Stationarity requires $\alpha + \beta < 1$. In our estimates,
+$\alpha + \beta \approx 0.97$, indicating strong but stationary volatility
+persistence — consistent with INR/USD exhibiting long memory in variance.
 
 The conditional variance is converted to annualised volatility for
 comparison with realised vol:
