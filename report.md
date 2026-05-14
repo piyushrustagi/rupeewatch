@@ -229,8 +229,8 @@ In the High-volatility regime, median annualised volatility runs at 6.9% vs 4.7%
 
 ## 5. Result
 
-- **Regression baseline RMSE:** 0.003797
-- **GARCH(1,1) RMSE:** 0.015329
+- **Regression baseline RMSE (`uv run main.py`):** 0.003797
+- **GARCH(1,1) RMSE (`uv run main.py`):** 0.015329
 - **Threshold (5% improvement):** 0.003607
 - **Passed:** `false`
 
@@ -252,7 +252,7 @@ risk state (Normal / Elevated / Stress) that the treasury desk can act
 on. The cost of under-hedging is asymmetric — correctly flagging a
 Stress regime matters even if the exact vol estimate is imprecise.
 
-**Extended pipeline results (from `notebook/RupeeWatch(CPAI).ipynb`):**
+**Extended pipeline results (notebook — 49 features, Aug 2024 test set, different from `uv run main.py`):**
 
 | Model | RMSE | MAE | MAPE | Dir. Accuracy |
 |---|---|---|---|---|
