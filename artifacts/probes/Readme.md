@@ -1,15 +1,30 @@
 # Source Probes — RupeeWatch
 
-Each file below is a one-row proof that the data source is real and reachable.
-Full datasets are fetched programmatically in `main.py`.
+Each file below provides a minimal proof that the data source is real, reachable, and successfully fetched.  
+Full datasets are retrieved programmatically in `main.py`.
 
 | Probe File | Source | Status |
 |------------|--------|--------|
-| probe_yfinance.md | Yahoo Finance — USDINR=X | ok |
-| probe_vix.md | FRED — VIXCLS (VIX Index) | ok |
-| probe_dxy.md | FRED — DTWEXBGS (US Dollar Index) | ok |
-| probe_oil.md | FRED — DCOILWTICO (WTI Crude Oil) | ok |
-| probe_ffr.md | FRED — DFF (Fed Funds Rate) | ok |
+| `probe_yfinance.md` | Yahoo Finance — USDINR=X | OK |
+| `probe_vix.md` | FRED — VIXCLS (VIX Index) | OK |
+| `probe_dxy.md` | FRED — DTWEXBGS (US Dollar Index) | OK |
+| `probe_oil.md` | FRED — DCOILWTICO (WTI Crude Oil) | OK |
+| `probe_ffr.md` | FRED — DFF (Federal Funds Rate) | OK |
 
-All five sources confirmed working. Probe CSVs also committed at
-`data/raw/` as machine-readable fallback.
+All five sources were successfully validated.  
+Machine-readable probe CSVs are also committed in `data/raw/` as reproducibility fallbacks.
+
+---
+
+# Source Probe Guidelines
+
+For the milestone, each primary data source should include a small proof that the source works and is accessible.
+
+Examples include:
+
+- one row from an API response
+- one row from a CSV or Excel file
+- one screenshot of a successful authenticated fetch
+- one small JSON or Markdown snippet showing a successful fetch
+
+These are not full analyses; they are lightweight reproducibility checks confirming that the source is valid and reachable.
