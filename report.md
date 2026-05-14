@@ -154,7 +154,7 @@ r_t = \mu + \varepsilon_t, \qquad \varepsilon_t = \sigma_t z_t, \quad z_t \sim \
 $$
 
 $$
-\sigma^2_t = \omega + \alpha\, \varepsilon^2_{t-1} + \beta\, \sigma^2_{t-1}
+\sigma^2_t = \omega + \alpha \varepsilon^2_{t-1} + \beta \sigma^2_{t-1}
 $$
 
 $\alpha$ captures how much yesterday's shock updates today's variance;
