@@ -170,7 +170,7 @@ Check this signal each morning before making FX hedging decisions.<br><br>
   </div>
 
   <div class="metrics-row">
-    <div class="metric-card"><div class="metric-label">Current INR/USD</div><div class="metric-value">₹95.67</div><div class="metric-sub">May 12, 2026</div></div>
+<div class="metric-card"><div class="metric-label">Current INR/USD</div><div class="metric-value" id="live-price">₹95.61</div><div class="metric-sub" id="live-date">May 13, 2026</div></div>
     <div class="metric-card"><div class="metric-label">Regression RMSE</div><div class="metric-value">0.0044</div><div class="metric-sub">baseline</div></div>
     <div class="metric-card"><div class="metric-label">GARCH RMSE</div><div class="metric-value">0.0133 <span class="badge badge-fail">failed</span></div><div class="metric-sub">vs 5% threshold</div></div>
     <div class="metric-card"><div class="metric-label">BiLSTM RMSE</div><div class="metric-value">0.0150</div><div class="metric-sub">bias-corrected</div></div>
@@ -340,6 +340,8 @@ fetch('https://raw.githubusercontent.com/piyushrustagi/rupeewatch/main/outputs/n
     document.getElementById('banner').className = 'banner ' + cls;
     document.getElementById('rs').textContent = states[cls];
     document.getElementById('at').textContent = actions[cls];
+    document.getElementById('live-price').textContent = '₹' + (d.current_price || 95.61).toFixed(2);
+    document.getElementById('live-date').textContent = d.based_on_data_until || 'May 13, 2026';
     console.log('Live forecast loaded:', d.forecast_date);
   })
   .catch(() => {
