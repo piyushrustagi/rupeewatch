@@ -86,14 +86,14 @@ before the test set begins. No shuffling.
 
 ## 5. Result
 
-- **Regression baseline RMSE:** 0.003796
-- **GARCH(1,1) RMSE:** 0.016071
-- **Threshold (5% improvement):** 0.003606
+- **Regression baseline RMSE:** 0.003797
+- **GARCH(1,1) RMSE:** 0.015329
+- **Threshold (5% improvement):** 0.003607
 - **Passed:** `false`
 
 GARCH(1,1) did not outperform the regression baseline on RMSE.
-The GARCH RMSE (0.016071) is approximately 4× higher than the
-regression baseline (0.003796), not lower. This null result is
+The GARCH RMSE (0.015329) is approximately 4× higher than the
+regression baseline (0.003797), not lower. This null result is
 consistent with the known difficulty of beating autoregressive
 regression benchmarks at short forecast horizons on currency data.
 
@@ -119,8 +119,8 @@ number of extreme surprise events (Trump inauguration Jan 2025,
 global selloff Apr 2025) rather than systematic model failure.
 
 **Note on reproducibility:** `uv run main.py` uses 3 lagged features
-and a 15% test split (May 2024 → May 2026), producing GARCH RMSE
-0.016071 vs baseline 0.003796. The notebook uses 49 features including
+and a 15% test split (May 2024 → May 2026), producing GARCH RMSE 0.015329 vs baseline 0.003797.
+The notebook uses 49 features including
 macro and regime signals on a consistent Aug 2024 test set, producing
 GARCH RMSE 0.013282 vs baseline 0.004407. Both pipelines reach the
 same conclusion — GARCH does not beat the baseline (passed: false).
@@ -129,25 +129,21 @@ same conclusion — GARCH does not beat the baseline (passed: false).
 
 ## 6. Evidence
 
-All figures and diagnostics are in `notebook/RupeeWatch(CPAI).ipynb`:
+All figures are committed to `outputs/` and the full pipeline is in `notebook/RupeeWatch(CPAI).ipynb`:
 
-- **Section 2:** EDA — ADF stationarity tests, ACF/PACF, Jarque-Bera
-  fat-tail tests, macro correlation heatmaps
-- **Section 3:** HMM regime detection — 2-state Gaussian, 10 restarts,
-  regime probability time series
-- **Section 5:** GARCH/EGARCH residual diagnostics — Ljung-Box,
-  QQ plots, ARCH LM test
-- **Section 6:** BiLSTM training curves, isotonic calibration plots,
-  SHAP feature importance (top features: regime state, VIX lag,
-  rolling volatility)
-- **Section 7:** Policy event study — 19 macro events, error by
-  surprise vs expected, regime state on each event date
-- **Section 8:** Next-day treasury briefing — forecast vol, risk
-  state, recommended action
-- **Dashboard:** `https://piyushrustagi.github.io/rupeewatch/dashboard.html`
-  — live visualisation of forecast vs actual, absolute error chart,
-  model comparison, regime analysis
+- **Section 2 — EDA:** ADF stationarity tests, ACF/PACF, Jarque-Bera fat-tail tests, macro correlation heatmaps → `outputs/acf_pacf.png`, `outputs/macro_corr.png`, `outputs/log_returns.png`, `outputs/data_overview.png`
 
+- **Section 3 — HMM Regime Detection:** 2-state Gaussian, 10 restarts, regime probability time series → `outputs/regime_price_chart.png`, `outputs/regime_transition.png`, `outputs/vol_distribution_regime.png`
+
+- **Section 5 — GARCH/EGARCH Benchmarks:** Ljung-Box, QQ plots, ARCH LM test → `outputs/garch_forecast_chart.png`, `outputs/forecast_vs_actual.png`
+
+- **Section 6 — BiLSTM:** Training curves, isotonic calibration plots, SHAP feature importance (top features: regime state, VIX lag, rolling volatility) → `outputs/SHAP_importance.png`, `outputs/predictions_vs_actual_test.png`, `outputs/BiLSTM_forecast.png`
+
+- **Section 7 — Policy Event Study:** 19 macro events, error by surprise vs expected → `outputs/forecast_error.png`, `outputs/pre_vs_post_event_vol.png`, `outputs/regime_transition_around_policy_events.png`
+
+- **Section 8 — Model Comparison:** All models vs actual, per-regime performance → `outputs/BiLSTM_vs_GARCH.png`, `outputs/RupeeWatch_Model_Comparison.png`, `outputs/RupeeWatch_combined_forecast.png`
+
+- **Dashboard:** `https://piyushrustagi.github.io/rupeewatch/dashboard.html` — live visualisation of forecast vs actual, absolute error chart, model comparison, regime analysis
 ---
 
 ## 7. Limits
