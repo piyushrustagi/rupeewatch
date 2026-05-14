@@ -180,15 +180,16 @@ primary_metric = {
     "metric_name": "RMSE",
     "model":       "garch_1_1",
     "value":       round(garch_rmse, 6),
-    "threshold":   threshold,
+    "threshold":   round(threshold, 6),
     "passed":      garch_passed,
-    "note":        "GARCH(1,1) rolling 1-step-ahead vs regression baseline. "
-                   "BiLSTM pipeline in notebooks/cp_and_ai.ipynb."
+    "note": "GARCH(1,1) rolling 1-step-ahead vs regression baseline. Full pipeline in notebook/RupeeWatch(CPAI).ipynb."
 }
 
 manifest = {
     "repo_runnable":              True,
     "charter_locked":             True,
+    "baseline_ready":             True,
+    "primary_metric_schema_ready": True,
     "data_pipeline_complete":     True,
     "regression_baseline_complete": True,
     "primary_model_complete":     True,
