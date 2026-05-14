@@ -86,14 +86,14 @@ before the test set begins. No shuffling.
 
 ## 5. Result
 
-- **Regression baseline RMSE:** 0.003796
-- **GARCH(1,1) RMSE:** 0.016071
-- **Threshold (5% improvement):** 0.003606
+- **Regression baseline RMSE:** 0.003797
+- **GARCH(1,1) RMSE:** 0.015329
+- **Threshold (5% improvement):** 0.003607
 - **Passed:** `false`
 
 GARCH(1,1) did not outperform the regression baseline on RMSE.
-The GARCH RMSE (0.016071) is approximately 4× higher than the
-regression baseline (0.003796), not lower. This null result is
+The GARCH RMSE (0.015329) is approximately 4× higher than the
+regression baseline (0.003797), not lower. This null result is
 consistent with the known difficulty of beating autoregressive
 regression benchmarks at short forecast horizons on currency data.
 
@@ -122,7 +122,7 @@ global selloff Apr 2025) rather than systematic model failure.
 and a 15% test split (May 2024 → May 2026), producing GARCH RMSE
 0.016071 vs baseline 0.003796. The notebook uses 49 features including
 macro and regime signals on a consistent Aug 2024 test set, producing
-GARCH RMSE 0.013282 vs baseline 0.004407. Both pipelines reach the
+GARCH RMSE 0.015329 vs baseline 0.003797. Both pipelines reach the
 same conclusion — GARCH does not beat the baseline (passed: false).
 
 ---
