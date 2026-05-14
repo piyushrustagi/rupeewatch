@@ -2,7 +2,7 @@
     "metric_name": "RMSE",
     "model": "garch_1_1",
     "value": 0.015329,
-    "threshold": 0.003607,
+    "threshold": 0.00360668,
     "passed": false,
-    "note": "GARCH(1,1) rolling 1-step-ahead vs regression baseline. Full pipeline in notebook/RupeeWatch(CPAI).ipynb."
+    "note": "GARCH(1,1) rolling 1-step-ahead vs regression baseline. BiLSTM pipeline in notebooks/cp_and_ai.ipynb."
 }
