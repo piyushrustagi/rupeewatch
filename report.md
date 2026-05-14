@@ -200,6 +200,8 @@ test.
 Strictly chronological. Training set: 2013-01-31
 to 2024-05-09 (2,937 days). Test set: 2024-05-10 to 2026-05-13
 (519 days). No lookahead. No shuffling at any stage.
+Note: data fetch begins 2013-01-01 but the first usable row is
+2013-01-31 after the 21-day rolling volatility warm-up period.
 
 ---
 
