@@ -12,7 +12,7 @@
 
 ## How Data Is Fetched
 
-All data is fetched programmatically in main.py:
+All data is fetched programmatically in 'main.py':
 
 - Yahoo Finance: yfinance.download('USDINR=X', start='2013-01-01') — no API key required
 - FRED API: fredapi.Fred(api_key).get_series('VIXCLS') — free API key required; probe CSVs committed as fallback so pipeline runs without a key
