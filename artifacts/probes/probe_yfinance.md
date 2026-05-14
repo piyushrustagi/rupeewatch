@@ -7,10 +7,10 @@
 - **One-row proof:**
 
 | Date       | Close  |
-|------------|--------|
+|------------|---------|
 | 2026-05-12 | 95.3914 |
 
 - **Notes:**  
   No API key required. Full dataset cached at `data/raw/usdinr.csv`.  
-  Data fetched from trading data spanning 2013-01-01 → 2026-05-12.
+  Data fetched from trading records spanning 2013-01-01 → 2026-05-12.  
   Workflow automatically updates the dataset daily by appending the latest available trading data.
