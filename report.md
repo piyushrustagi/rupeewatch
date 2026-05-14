@@ -122,7 +122,7 @@ global selloff Apr 2025) rather than systematic model failure.
 and a 15% test split (May 2024 → May 2026), producing GARCH RMSE 0.015329 vs baseline 0.003797.
 The notebook uses 49 features including
 macro and regime signals on a consistent Aug 2024 test set, producing
-GARCH RMSE 0.015329 vs baseline 0.003797. Both pipelines reach the
+GARCH RMSE 0.013282 vs baseline 0.004407. Both pipelines reach the
 same conclusion — GARCH does not beat the baseline (passed: false).
 
 ---
