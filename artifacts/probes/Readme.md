@@ -3,6 +3,10 @@
 Each file below provides a minimal proof that the data source is real, reachable, and successfully fetched.  
 Full datasets are retrieved programmatically in `main.py`.
 
+Probe files are generated from the same ingestion workflow used by the forecasting pipeline, ensuring consistency between validation artifacts and production data pulls.
+
+Running `main.py` refreshes the underlying datasets and appends newly available observations automatically.
+
 | Probe File | Source | Status |
 |------------|--------|--------|
 | `probe_yfinance.md` | Yahoo Finance — USDINR=X | OK |
@@ -28,4 +32,3 @@ Examples include:
 - one small JSON or Markdown snippet showing a successful fetch
 
 These are not full analyses; they are lightweight reproducibility checks confirming that the source is valid and reachable.
-Running `main.py` refreshes the underlying datasets and appends newly available observations automatically.
