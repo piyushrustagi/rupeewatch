@@ -132,8 +132,8 @@ $$
 \hat{\sigma}_t = \beta_0 + \beta_1 r_{t-1} + \beta_2 \sigma^{(5)}_{t-1} + \beta_3 \sigma^{(21)}_{t-1} + \varepsilon_t
 $$
 
-where $r_{t-1}$ is the previous day's log return and σ_{t-1}^(5) is the
-5-day lagged rolling volatility, and σ_{t-1}^(21) is the 21-day lagged
+where $r_{t-1}$ is the previous day's log return and \sigma^{(5)}_{t-1} is the
+5-day lagged rolling volatility, and \sigma^{(21)}_{t-1} is the 21-day lagged
 rolling volatility.
 
 Fit on the training set (85% of data, chronologically), evaluated on
