@@ -1,7 +1,7 @@
 {
     "metric_name": "RMSE",
     "model": "linear_regression_baseline",
-    "value": 0.003796,
-    "mae": 0.0018,
+    "value": 0.003797,
+    "mae": 0.001802,
     "dataset": "usdinr_test_split"
 }

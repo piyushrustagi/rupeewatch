@@ -1,3 +1,3 @@
 model,rmse,mae,passed
-regression_baseline,0.003796,0.0018,
-garch_1_1,0.016071,0.013142,False
+regression_baseline,0.003797,0.001802,
+garch_1_1,0.015329,0.012342,False

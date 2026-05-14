@@ -5,7 +5,7 @@
     "regression_baseline_complete": true,
     "primary_model_complete": true,
     "run_command": "uv run main.py",
-    "data_through": "2026-05-12",
+    "data_through": "2026-05-13",
     "sources": [
         {
             "name": "yfinance:USDINR=X",
