@@ -370,14 +370,19 @@ Most Low-to-High regime transitions occur within a short window around identifia
 
 ## 7. Limits
 
-- **Not trading advice.** Outputs must not be used to make leveraged trading decisions.
-- **No causal claims.** SHAP values reflect predictive importance, not causal effects.
-- **Short horizon only.** All forecasts are 1-day-ahead. Not validated for multi-day horizons.
-- **Daily data only.** Intraday dynamics are not captured.
-- **Overfitting risk.** BiLSTM and HMM are complex models fit on 10 years of data. They may degrade on genuinely out-of-sample future data.
-- **Regime labels are estimates.** HMM regimes are inferred, not observed. Labels may shift across different seeds or sample lengths.
-- **Macro features are predictive signals only.** No causal identification strategy is claimed.
+* **Not trading advice.** Outputs are statistical forecasts, not financial recommendations. Even a low RMSE does not imply profitability — transaction costs, slippage, and leverage can turn a directionally correct model into a loss-making strategy.
 
+* **No causal claims.** This study is predictive rather than causal. The estimated relationships between macro-financial variables and INR/USD volatility should therefore be interpreted as forecasting associations rather than structural macroeconomic effects. SHAP values reflect how much each feature shifts the model’s prediction, not whether that feature causes the exchange rate to move. A high SHAP score for VIX means the model relies heavily on it for prediction, not that VIX independently drives INR/USD movements.
+
+* **Short horizon only.** All forecasts are 1-day-ahead. Forecast error compounds quickly beyond one step — a model with RMSE of 0.003 at t+1 may be meaningless at t+5 because errors accumulate and the input features drift.
+
+* **Daily data only.** The pipeline is trained on end-of-day closes. Intraday volatility spikes, flash crashes, or opening gaps are invisible to the model and will not be reflected in next-day forecasts.
+
+* **Overfitting risk.** BiLSTM and HMM are high-capacity models trained on 10 years of data. In-sample fit may be strong while out-of-sample generalization degrades — especially across macro regime shifts not present in the training window.
+
+* **Regime labels are estimates.** HMM regimes are latent states inferred by the model, not labelled ground truth. The same data can produce different regime assignments under different random seeds, initialization schemes, or sample lengths — treat regime labels as approximate, not definitive.
+
+* **Macro features are predictive signals only.** Variables like VIX, DXY, and crude oil are included because they improve forecast accuracy, not because a causal identification strategy (e.g. instrumental variables or a natural experiment) has been applied. Correlation-based inclusion is not equivalent to causal inference.
 ---
 
 ## 8. If The Result Was Null Or Weak
